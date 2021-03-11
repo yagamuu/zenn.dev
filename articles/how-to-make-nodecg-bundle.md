@@ -7,6 +7,8 @@ published: true
 ---
 
 # はじめに
+**重要 :** 2021/03/11更新(Speedcontrolの今後のアップデートについての話を追記、更にspeedcontrol-additionsへの脚注を修正)
+
 ここ数年でRTAコミュニティ並びに各種ゲームコミュニティで注目を浴びるようになった配信レイアウト開発フレームワークであるNodeCGですが、実用的な配信レイアウトが具体的にどのような流れで開発が行われているかを記した記事は現在までほとんど存在していないように思われます。  
 そこで今回は私が先日開発を行った、[第2回不思議のダンジョンRTAフェス](https://oengus.io/marathon/mysrtafes2)というRTA系イベントの配信レイアウトの開発をどのように進めてきたかを簡潔にですが当記事でお話したいと思います。
 
@@ -108,13 +110,16 @@ Speedcontrolにはゲーム情報にデータ列を増やす`Custom Data`とい�
 Speedcontrolをインストールした状態でこのbundleをインストールすると、Speedcontrolで用意した各ゲーム情報にプレイヤーのSNSアカウント、解説者の名前とSNSアカウントをDashboard上から追加することができるようになります。
 追加したデータはspeedcontrol-additions側のReplicantに出力されるので、Speedcontrol側のReplicantと適合するデータを照らし合わせながらレイアウトに表示する流れとなります。
 
-ただしこのbundleを使用するには現状Speedcontrolのカスタマイズが必要であり、具体的にはゲーム/プレイヤー情報(`runDataArray`)にユニークID(`externalID`)のデータ列を追加する必要があります。([実装例1](https://github.com/cma2819/nodecg-speedcontrol/commit/4f026e884e9e7988a63be794f1a6ac3d4e16f4ce),[2](https://github.com/yagamuu/nodecg-speedcontrol/commit/7ea8b25be80e2d30a399cde274fcf1b441c0689a))
-理由としては、プレイヤーのSNSアカウントを追加するには各ゲームのプレイヤーに紐づけを行うためユニークなデータが必要ですが、現状のSpeedcontrolにはそれが存在しないからです。^[ゲーム情報そのものにはユニークIDがある(`RunData.externalID`)ものの、プレイヤーを管理する`RunData.teams.players`にユニークID列が存在しない]
+ただしこのbundleを使用するには現状Speedcontrolのカスタマイズが必要であり、具体的にはゲーム/プレイヤー情報(`runDataArray`)にプレイヤー個別のユニークID(`externalID`)のデータ列を追加する必要があります。([実装例](https://github.com/cma2819/nodecg-speedcontrol/commit/4f026e884e9e7988a63be794f1a6ac3d4e16f4ce))
+理由としては、プレイヤーのSNSアカウントを追加するには各ゲームのプレイヤーに紐づけを行うためユニークなデータが必要ですが、現状のSpeedcontrolにはそれが存在しないからです。^[ゲーム情報そのものにはインポート時に設定できる不変のユニークIDとなる外部ID列がある(`RunData.externalID`)ものの、プレイヤーを管理する`RunData.teams.players`には存在しません。players.idはユニークではありますがインポートを行うたびに変更される上にランダムに設定されてしまうのでこれを使って紐付けるのは非推奨です。]
 そのためSpeedcontrolを自分でforkしたものに上記のカスタマイズを行うか、よくわからない方は既に上記カスタマイズが行われたSpeedcontrolを使用すると良いでしょう。自分が確認している限りでは上記カスタマイズに対応しているのは以下2つのforkです。
 - [yagamuu/nodecg-speedcontrol(branch:mysrtafes2021)](https://github.com/yagamuu/nodecg-speedcontrol/tree/mysrtafes2021)
 - [cma2819/nodecg-speedcontrol](https://github.com/cma2819/nodecg-speedcontrol)
 
 余談ですが1つ目の方はおまけでイベント中のチェックリスト機能が含まれています。[Speedcontrol本家にもプルリクを出しているので](https://github.com/speedcontrol/nodecg-speedcontrol/pull/94)そのうち取り入れられるかも？
+
+**追記(2021/03/11) :** Speedcontrolのメンテナーの方から今後Speedcontrolでは解説者の情報をゲーム情報に追加できるようになり、更に各プレイヤーに個別でCustom Dataを追加できるようアップデート予定であると教えて頂きました。(devブランチでは既にプレイヤー別Custom Dataが利用できます)
+よって将来speedcontrol-additionsの利用とSpeedcontrolのカスタマイズは不要になると思われます。
 
 ## 5. 外部Webサービスとの連携
 今回のレイアウト実装においてはさらに以下2つのbundleを使用しています。
