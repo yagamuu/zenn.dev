@@ -3,7 +3,7 @@ title: "NodeCGを活用した配信レイアウトができるまで2 - 2024年�
 emoji: "📹"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["javascript","nodejs","nodecg"]
-published: false
+published: true
 ---
 
 # はじめに
